@@ -30,7 +30,7 @@ public class SpringBookJpaTestSlice {
     void testJpaTestSlice(){
         long countBefore = bookRepository.count();
         assertThat(countBefore).isEqualTo(2);
-        bookRepository.save(new Book("My Book", "123", "self"));
+        bookRepository.save(new Book("My Book", "123", "self", null));
         long countAfter = bookRepository.count();
         assertThat(countBefore).isLessThan(countAfter);
     }
