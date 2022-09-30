@@ -1,0 +1,38 @@
+databaseChangeLog:
+- changeSet:
+    id: 1664508175577-1
+    author: Joban
+    changes:
+    - createSequence:
+        cacheSize: 1
+        cycle: false
+        dataType: bigint
+        incrementBy: 50
+        maxValue: 9223372036854775807
+        minValue: 1
+        sequenceName: book_seq
+        startValue: 1
+- changeSet:
+    id: 1664508175577-2
+    author: Joban
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: book_pkey
+            name: id
+            type: BIGINT
+        - column:
+            name: isbn
+            type: VARCHAR(255)
+        - column:
+            name: publisher
+            type: VARCHAR(255)
+        - column:
+            name: title
+            type: VARCHAR(255)
+        tableName: book
+

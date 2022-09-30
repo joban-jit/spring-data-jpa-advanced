@@ -1,0 +1,11 @@
+databaseChangeLog:
+  - changeSet:
+      id: addAuthorIdColumn
+      author: Joban
+      changes:
+        - addColumn:
+            tableName: book
+            columns:
+              - column:
+                  name: author_id
+                  type: bigint
