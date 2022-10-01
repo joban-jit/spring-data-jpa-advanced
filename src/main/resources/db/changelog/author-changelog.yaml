@@ -24,7 +24,7 @@ databaseChangeLog:
                     primaryKey: true
                     primaryKeyName: author_pkey
               name: id
-              type: BIGINT
+              type: SERIAL
         - column:
               name: first_name
               type: VARCHAR(50)

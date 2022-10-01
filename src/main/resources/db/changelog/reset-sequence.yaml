@@ -5,5 +5,5 @@ databaseChangeLog:
       changes:
         - sql:
             dbms: 'postgresql'
-            sql: ALTER SEQUENCE book_seq RESTART
+            sql: ALTER SEQUENCE book_id_seq RESTART; ALTER SEQUENCE author_id_seq RESTART
 
