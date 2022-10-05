@@ -15,8 +15,7 @@ import lombok.Setter;
 @Getter
 @Entity
 @NoArgsConstructor
-@NamedQuery(name = "find_all_books",query = "FROM Book")
-@NamedQuery(name = "find_book_by_title",query = "FROM Book b WHERE b.title=:title")
+@NamedQuery(name = "Book.findBookByTitleNamed", query = "FROM Book b WHERE b.title=:title")
 public class Book {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

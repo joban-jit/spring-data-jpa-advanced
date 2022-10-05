@@ -1,11 +1,7 @@
 package com.sdjpa;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
 
@@ -25,6 +21,7 @@ import com.sdjpa.domain.Author;
 import com.sdjpa.domain.Book;
 
 import net.bytebuddy.utility.RandomString;
+import org.springframework.orm.jpa.JpaObjectRetrievalFailureException;
 
 @DataJpaTest
 @Import({AuthorDaoImpl.class, BookDaoImpl.class})
@@ -46,9 +43,9 @@ class DaoIntegrationTest {
 
         bookDao.deleteBookById(saved.getId());
 
-        Book deleted = bookDao.getById(saved.getId());
+        Long id = saved.getId();
 
-        assertThat(deleted).isNull();
+        assertThrows(JpaObjectRetrievalFailureException.class, ()->  bookDao.getById(id));
     }
 
     @Test
@@ -114,31 +111,7 @@ class DaoIntegrationTest {
     	Book foundBook = bookDao.findByISBN(book.getIsbn());
     	assertEquals("ISBN TEST", foundBook.getTitle());
     }
-    
-    @Test
-    void testfindBookByTitleUsingNamedQuery() {
-    	Book book = bookDao.findBookByTitleUsingNamedQuery("Spring in Action");
 
-        assertThat(book).isNotNull();
-    	assertEquals("Spring in Action", book.getTitle());
-    }
-    
-    
-    @Test
-    void testFindAllBooksUsingNamedQuery() {
-    	List<Book> books = bookDao.findAll();
-    	assertNotNull(books);
-    	assertTrue(books.size()>0);
-    }
-    
-    
-    @Test
-    void testfindBookByTitleUsingNativeQuery() {
-    	Book book = bookDao.findBookByTitleUsingNativeQuery("Spring in Action");
-    	
-    	assertThat(book).isNotNull();
-    	assertEquals("Spring in Action", book.getTitle());
-    }
     
     @Test
     void testFindAllBooksUsingPageable() {
@@ -153,12 +126,18 @@ class DaoIntegrationTest {
     	assertNotNull(books);
     	assertEquals(5, books.size());
     }
+    @Test
+    void testFindAllBooksUsingPageSizeAndPageOffsetPage2() {
+    	List<Book> books = bookDao.findAllBooks(5, 5);
+    	assertNotNull(books);
+    	assertEquals(5, books.size());
+    }
     
     @Test
     void testFindAllBooksSortByTitle() {
     	List<Book> sortedBooks = bookDao.findAllBooksSortByTitle(PageRequest.of(0, 10, Sort.by(Sort.Order.desc("title"))));
     	assertNotNull(sortedBooks);
-    	assertEquals(5, sortedBooks.size());
+    	assertEquals(10, sortedBooks.size());
     	sortedBooks.stream().forEachOrdered(book->{
     		System.out.println(book.getTitle());
     	});
@@ -176,8 +155,11 @@ class DaoIntegrationTest {
         Author saved = authorDao.saveNewAuthor(author);
 
         authorDao.deleteAuthorById(saved.getId());
+        long id = saved.getId();
+        assertThrows(JpaObjectRetrievalFailureException.class,
+                ()-> authorDao.getById(id)
+        );
 
-        assertNull(authorDao.getById(saved.getId()));
 
     }
 
@@ -211,25 +193,9 @@ class DaoIntegrationTest {
     @Test
     void testGetAuthorByName() {
         Author author = authorDao.findAuthorByName("Random", "House");
-
         assertThat(author).isNotNull();
     }
-    
-    @Test
-    void testfindAuthorByNameUsingNamedQuery() {
-    	Author author = authorDao.findAuthorByNameUsingNamedQuery("Random", "House");
-    	
-    	assertThat(author).isNotNull();
-    	assertEquals("Random", author.getFirstName());
-    }
-    
-    @Test
-    void testfindAuthorByNameUsingCriteriaQuery() {
-    	Author author = authorDao.findAuthorByNameUsingCriteria("Random", "House");
-    	
-    	assertThat(author).isNotNull();
-    	assertEquals("Random", author.getFirstName());
-    }
+
 
     @Test
     void testGetAuthor() {
@@ -237,6 +203,7 @@ class DaoIntegrationTest {
         Author author = authorDao.getById(5L);
 
         assertThat(author).isNotNull();
+        assertEquals(5L, author.getId());
 
     }
     
@@ -255,14 +222,48 @@ class DaoIntegrationTest {
     		assertEquals("Oriely", author.getLastName());
     	});
     }
-    
+
     @Test
-    void testfindAuthorByNameUsingNativeQuery() {
-    	Author author = authorDao.findAuthorByNameUsingNativeQuery("Random", "House");
-    	
-    	assertThat(author).isNotNull();
-    	assertEquals("Random", author.getFirstName());
+    void testFindAuthorByLastNameWithPage(){
+        List<Author> authors = authorDao.findAllAuthorsByName("Oriely", PageRequest.of(0, 5));
+        authors.forEach(author->{
+            assertEquals("Oriely", author.getLastName());
+        });
+        assertEquals(2, authors.size());
     }
+
+    @Test
+    void testFindAuthorByLastNameWithPageAndSort(){
+        List<Author> authors = authorDao.findAllAuthorsByName("Oriely", PageRequest.of(
+                0,
+                5,
+                Sort.by(Sort.Order.desc("firstName"))
+        ));
+        authors.forEach(author->{
+            assertEquals("Oriely", author.getLastName());
+        });
+        assertEquals("John", authors.get(0).getFirstName());
+
+        assertEquals(2, authors.size());
+    }
+
+    @Test
+    void testFindAuthorByLastNameWithPageAndSortAsc(){
+        List<Author> authors = authorDao.findAllAuthorsByName("Oriely", PageRequest.of(
+                0,
+                5,
+                Sort.by(Sort.Order.asc("firstName"))
+        ));
+        authors.forEach(author->{
+            assertEquals("Oriely", author.getLastName());
+        });
+        assertEquals("Brian", authors.get(0).getFirstName());
+
+        assertEquals(2, authors.size());
+    }
+
+
+
     
 
 }

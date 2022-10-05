@@ -2,168 +2,86 @@ package com.sdjpa.dao;
 
 import java.util.List;
 
+import com.sdjpa.repositories.BookRepository;
+import jakarta.persistence.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import com.sdjpa.domain.Book;
-
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.Query;
-import jakarta.persistence.TypedQuery;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 public class BookDaoImpl implements BookDao {
-	
-	private EntityManagerFactory emf;
-	
-	public BookDaoImpl(EntityManagerFactory emf) {
-		this.emf= emf;
-	}
-	
-	private EntityManager getEntityManager() {
-		return emf.createEntityManager();
-	}
+
+	@Autowired
+	private BookRepository bookRepository;
+
 	
 
 	@Override
 	public Book getById(Long id) {
-		return getEntityManager().find(Book.class, id);
+		return bookRepository.getReferenceById(id);
 	}
 
 	@Override
 	public Book findBookByTitle(String title) {
-		TypedQuery<Book> query = getEntityManager().createQuery(
-				"SELECT b FROM Book b WHERE b.title=:title", 
-				Book.class
-				);
-		query.setParameter("title", title);
-		return query.getSingleResult();
-	}
-	
-	@Override
-	public Book findBookByTitleUsingNativeQuery(String title) {
-		Query query = getEntityManager().createNativeQuery(
-				"SELECT * FROM Book b WHERE b.title=?", 
-				Book.class
-				);
-		query.setParameter(1, title);
-		return (Book) query.getSingleResult();
+		return bookRepository.findBookByTitle(title)
+				.orElseThrow(EntityNotFoundException::new);
 	}
 
 	@Override
 	public Book saveNewBook(Book book) {
-		EntityManager eManager = getEntityManager();
-		eManager.getTransaction().begin();
-		eManager.persist(book);
-		eManager.flush();
-		eManager.getTransaction().commit();
-		eManager.close();
-		
-		return book;
+		return bookRepository.save(book);
 	}
 
 	@Override
+	@Transactional
 	public Book updateBook(Book book) {
-		EntityManager eManager = getEntityManager();
-		eManager.getTransaction().begin();
-		eManager.merge(book);
-		eManager.flush();
-		eManager.getTransaction().commit();
-		eManager.close();
-		return book;
-		
+		Book foundBook = bookRepository.getReferenceById(book.getId());
+		foundBook.setTitle(book.getTitle());
+		foundBook.setIsbn(book.getIsbn());
+		foundBook.setAuthorId(book.getAuthorId());
+		foundBook.setPublisher(book.getPublisher());
+		return bookRepository.save(foundBook);
+
 	}
 
 	@Override
 	public void deleteBookById(Long id) {
-		EntityManager eManager = getEntityManager();
-		eManager.getTransaction().begin();
-		Book book = eManager.find(Book.class, id);
-		eManager.remove(book);
-		eManager.flush();
-		eManager.getTransaction().commit();
-		eManager.close();
-		
-		
+		bookRepository.deleteById(id);
 	}
 	
 	@Override
 	public Book findByISBN(String isbn) {
-		EntityManager eManager = getEntityManager();
-		try {
-			TypedQuery<Book> query = getEntityManager().createQuery(
-					"SELECT b FROM Book b WHERE b.isbn=:isbn", 
-					Book.class
-					);
-			query.setParameter("isbn", isbn);
-			return query.getSingleResult();
-		} finally {
-
-			eManager.close();
-		}
-	}
-
-	@Override
-	public List<Book> findAll() {
-		TypedQuery<Book> query = getEntityManager().createNamedQuery(
-				"find_all_books", 
-				Book.class
-				);
-		return query.getResultList();
-	}
-
-	@Override
-	public Book findBookByTitleUsingNamedQuery(String title) {
-		TypedQuery<Book> query = getEntityManager().createNamedQuery(
-				"find_book_by_title", 
-				Book.class
-				);
-		query.setParameter("title", title);
-		return query.getSingleResult();
+		return bookRepository.findBookByIsbn(isbn)
+				.orElseThrow(EntityNotFoundException::new);
 	}
 	
 	@Override
 	public List<Book> findAllBooks(int offset, int pageSize) {
-		EntityManager em = getEntityManager();
-		try {
-			TypedQuery<Book> query = em.createQuery("select b from Book b", Book.class);
-			query.setFirstResult(offset);
-			query.setMaxResults(pageSize);
-			return query.getResultList();
-		} finally {
-			em.close();
+		Pageable pageable = PageRequest.of(offset, pageSize);
+		if (offset>0){
+			pageable = pageable.withPage(offset/pageSize);
+		}else{
+			pageable = pageable.withPage(0);
 		}
+		return findAllBooks(pageable);
 	}
 	
 	@Override
 	public List<Book> findAllBooks(Pageable pageable) {
-		EntityManager em = getEntityManager();
-		try {
-			TypedQuery<Book> query = em.createQuery("select b from Book b", Book.class);
-			query.setFirstResult(Math.toIntExact(pageable.getOffset()));
-			query.setMaxResults(pageable.getPageSize());
-			return query.getResultList();
-		} finally {
-			em.close();
-		}
+		return bookRepository.findAll(pageable).getContent();
 	}
 	
 	@Override
 	public List<Book> findAllBooksSortByTitle(Pageable pageable) {
-		EntityManager em = getEntityManager();
-		try {
-			String hql = "select b from Book b order by b.title "
-		+pageable.getSort().getOrderFor("title").getDirection().name();
-			TypedQuery<Book> query = em.createQuery(hql, Book.class);
-			query.setFirstResult(Math.toIntExact(pageable.getOffset()));
-			query.setMaxResults(pageable.getPageSize());
-			return query.getResultList();
-		} finally {
-			em.close();
-		}
-	}
+		Page<Book> bookPage = bookRepository.findAll(pageable);
 
+		return bookPage.getContent();
+	}
 
 
 }
