@@ -1,6 +1,6 @@
 databaseChangeLog:
 - changeSet:
-    id: 1664508175577-1
+    id: baseline-11
     author: Joban
     changes:
     - createSequence:
@@ -8,12 +8,12 @@ databaseChangeLog:
         cycle: false
         dataType: bigint
         incrementBy: 50
-        maxValue: 9223372036854775807
+        maxValue: 92233730368547
         minValue: 1
-        sequenceName: book_seq
+        sequenceName: order_header_seq
         startValue: 1
 - changeSet:
-    id: 1664508175577-2
+    id: baseline-12
     author: Joban
     changes:
     - createTable:
@@ -22,17 +22,35 @@ databaseChangeLog:
             constraints:
               nullable: false
               primaryKey: true
-              primaryKeyName: book_pkey
+              primaryKeyName: order_header_pkey
             name: id
-            type: BIGINT
+            type: SERIAL
         - column:
-            name: isbn
-            type: VARCHAR(255)
+            name: customer
+            type: VARCHAR(30)
         - column:
-            name: publisher
-            type: VARCHAR(255)
+            name: shipping_address
+            type: VARCHAR(30)
         - column:
-            name: title
-            type: VARCHAR(255)
-        tableName: book
+            name: shipping_city
+            type: VARCHAR(30)
+        - column:
+            name: shipping_state
+            type: VARCHAR(30)
+        - column:
+            name: shipping_zip_code
+            type: VARCHAR(30)
+        - column:
+            name: bill_to_address
+            type: VARCHAR(30)
+        - column:
+            name: bill_to_city
+            type: VARCHAR(30)
+        - column:
+            name: bill_to_state
+            type: VARCHAR(30)
+        - column:
+            name: bill_to_zip_code
+            type: VARCHAR(30)
+        tableName: order_header
 

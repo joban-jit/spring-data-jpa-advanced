@@ -1,9 +1,0 @@
-databaseChangeLog:
-  - changeSet:
-      id: sql-insert
-      author: Joban
-      changes:
-        - sql:
-            dbms: 'postgresql'
-            sql: ALTER SEQUENCE book_seq RESTART
-

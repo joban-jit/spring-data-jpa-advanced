@@ -67,12 +67,12 @@
 				<artifactId>liquibase-maven-plugin</artifactId>
 				<version>4.16.1</version>
 				<configuration>
-					<url>jdbc:postgresql://localhost:5432/bookdb</url>
+					<url>jdbc:postgresql://localhost:5432/orderservice</url>
 					<username>me</username>
 					<password>Joban123</password>
 					<outputChangeLogFile>changelog.yaml</outputChangeLogFile>
 					<changeSetAuthor>Joban</changeSetAuthor>
-					<changelogSchemaName>bookdb</changelogSchemaName>
+					<changelogSchemaName>orderservice</changelogSchemaName>
 				</configuration>
 				<dependencies>
 					<dependency>
