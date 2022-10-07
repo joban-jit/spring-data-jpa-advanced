@@ -1,0 +1,28 @@
+databaseChangeLog:
+  - changeSet:
+      id: addTable-product
+      author: Joban
+      changes:
+        - createTable:
+            tableName: product
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: product_pkey
+                  name: id
+                  type: SERIAL
+              - column:
+                  name: description
+                  type: varchar(100)
+              - column:
+                  name: product_status
+                  type: varchar(20)
+              - column:
+                  name: created_date
+                  type: timestamp
+              - column:
+                  name: last_modified_date
+                  type: timestamp
+
