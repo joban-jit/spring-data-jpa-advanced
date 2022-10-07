@@ -1,0 +1,11 @@
+databaseChangeLog:
+  - changeSet:
+      id: addColumn-order_status
+      author: Joban
+      changes:
+        - addColumn:
+            tableName: order_header
+            columns:
+              - column:
+                  name: order_status
+                  type: varchar(30)

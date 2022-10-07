@@ -2,45 +2,54 @@ package com.sdjpa.domain;
 
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.Hibernate;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import java.time.LocalDateTime;
+import java.util.Objects;
 
 /**
  * Created by jt on 12/5/21.
  */
 @Entity
-@AttributeOverrides({
-        @AttributeOverride(
+@AttributeOverride(
                 name = "shippingAddress.address",
                 column = @Column(name = "shipping_address")
-        ),
-        @AttributeOverride(
+        )
+@AttributeOverride(
                 name = "shippingAddress.city",
                 column = @Column(name = "shipping_city")
-        ),
-        @AttributeOverride(
+        )
+@AttributeOverride(
                 name = "shippingAddress.state",
                 column = @Column(name = "shipping_state")
-        ),
-        @AttributeOverride(
+        )
+@AttributeOverride(
                 name = "shippingAddress.zipCode",
                 column = @Column(name = "shipping_zip_code")
-        ),
-        @AttributeOverride(
+        )
+@AttributeOverride(
                 name = "billToAddress.address",
                 column = @Column(name = "bill_to_address")
-        ),
-        @AttributeOverride(
+        )
+@AttributeOverride(
                 name = "billToAddress.city",
                 column = @Column(name = "bill_to_city")
-        ),
-        @AttributeOverride(
+        )
+@AttributeOverride(
                 name = "billToAddress.state",
                 column = @Column(name = "bill_to_state")
-        ),
-        @AttributeOverride(
+        )
+@AttributeOverride(
                 name = "billToAddress.zipCode",
                 column = @Column(name = "bill_to_zip_code")
         )
-})
+
+@Getter
+@Setter
 public class OrderHeader extends BaseEntity{
 
     private String customer;
@@ -51,51 +60,43 @@ public class OrderHeader extends BaseEntity{
     @Embedded
     private Address billToAddress;
 
-    public String getCustomer() {
-        return customer;
-    }
+    @Enumerated(EnumType.STRING)
+    private OrderStatus orderStatus;
 
-    public void setCustomer(String customer) {
-        this.customer = customer;
-    }
+    @CreationTimestamp
+    @Column(updatable = false)
+    private LocalDateTime createdDate;
 
-    public Address getShippingAddress() {
-        return shippingAddress;
-    }
-
-    public void setShippingAddress(Address shippingAddress) {
-        this.shippingAddress = shippingAddress;
-    }
-
-    public Address getBillToAddress() {
-        return billToAddress;
-    }
-
-    public void setBillToAddress(Address billToAddress) {
-        this.billToAddress = billToAddress;
-    }
+    @UpdateTimestamp
+    private LocalDateTime lastModifiedDate;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof OrderHeader)) return false;
+        if (!(o instanceof OrderHeader that)) return false;
         if (!super.equals(o)) return false;
-
-        OrderHeader that = (OrderHeader) o;
 
         if (getCustomer() != null ? !getCustomer().equals(that.getCustomer()) : that.getCustomer() != null)
             return false;
-        if (shippingAddress != null ? !shippingAddress.equals(that.shippingAddress) : that.shippingAddress != null)
+        if (getShippingAddress() != null ? !getShippingAddress().equals(that.getShippingAddress()) : that.getShippingAddress() != null)
             return false;
-        return billToAddress != null ? billToAddress.equals(that.billToAddress) : that.billToAddress == null;
+        if (getBillToAddress() != null ? !getBillToAddress().equals(that.getBillToAddress()) : that.getBillToAddress() != null)
+            return false;
+        if (getOrderStatus() != that.getOrderStatus()) return false;
+        if (getCreatedDate() != null ? !getCreatedDate().equals(that.getCreatedDate()) : that.getCreatedDate() != null)
+            return false;
+        return getLastModifiedDate() != null ? getLastModifiedDate().equals(that.getLastModifiedDate()) : that.getLastModifiedDate() == null;
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
         result = 31 * result + (getCustomer() != null ? getCustomer().hashCode() : 0);
-        result = 31 * result + (shippingAddress != null ? shippingAddress.hashCode() : 0);
-        result = 31 * result + (billToAddress != null ? billToAddress.hashCode() : 0);
+        result = 31 * result + (getShippingAddress() != null ? getShippingAddress().hashCode() : 0);
+        result = 31 * result + (getBillToAddress() != null ? getBillToAddress().hashCode() : 0);
+        result = 31 * result + (getOrderStatus() != null ? getOrderStatus().hashCode() : 0);
+        result = 31 * result + (getCreatedDate() != null ? getCreatedDate().hashCode() : 0);
+        result = 31 * result + (getLastModifiedDate() != null ? getLastModifiedDate().hashCode() : 0);
         return result;
     }
 }

@@ -1,3 +1,9 @@
 databaseChangeLog:
   - include:
       file: db/changelog/baseline-changelog.yaml
+  - include:
+      file: db/changelog/order_status_col-changelog.yaml
+  - include:
+      file: db/changelog/created_date-changelog.yaml
+  - include:
+      file: db/changelog/last_modified_date-changelog.yaml

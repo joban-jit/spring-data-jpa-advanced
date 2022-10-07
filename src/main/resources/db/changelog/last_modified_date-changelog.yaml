@@ -1,0 +1,11 @@
+databaseChangeLog:
+  - changeSet:
+      id: addColumn-last_modified_date
+      author: Joban
+      changes:
+        - addColumn:
+            tableName: order_header
+            columns:
+              - column:
+                  name: last_modified_date
+                  type: timestamp
