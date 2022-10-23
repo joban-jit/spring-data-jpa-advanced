@@ -1,18 +1,5 @@
 databaseChangeLog:
 - changeSet:
-    id: baseline-11
-    author: Joban
-    changes:
-    - createSequence:
-        cacheSize: 1
-        cycle: false
-        dataType: bigint
-        incrementBy: 50
-        maxValue: 92233730368547
-        minValue: 1
-        sequenceName: order_header_seq
-        startValue: 1
-- changeSet:
     id: baseline-12
     author: Joban
     changes:
