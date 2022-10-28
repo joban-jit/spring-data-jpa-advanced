@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
@@ -35,9 +37,9 @@ class ProductRepositoryTest {
 
     @Test
     void testGetCategory(){
-        Product product1 = productRepository.findByDescription("PRODUCT1");
-        assertNotNull(product1);
-        assertNotNull(product1.getCategories());
+        Optional<Product> product1 = productRepository.findByDescription("PRODUCT1");
+        assertNotNull(product1.get());
+        assertNotNull(product1.get().getCategories());
 
     }
 
