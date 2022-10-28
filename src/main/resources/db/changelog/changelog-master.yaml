@@ -9,3 +9,16 @@ databaseChangeLog:
       file: db/changelog/last_modified_date-changelog.yaml
   - include:
       file: db/changelog/product_table-changelog.yaml
+  - include:
+      file: db/changelog/order_line-changelog.yaml
+  - include:
+      file: db/changelog/order_line_update-changelog.yaml
+  - include:
+      file: db/changelog/product_category-changelog.yaml
+  - include:
+      file: db/changelog/customer-changelog.yaml
+  - include:
+      file: db/changelog/order_approval-changelog.yaml
+  - include:
+      file: db/changelog/order_approval_bi_dir-changelog.yaml
+

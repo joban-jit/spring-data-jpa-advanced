@@ -1,0 +1,62 @@
+databaseChangeLog:
+  - changeSet:
+      id: customer-1
+      author: Author
+      changes:
+        - createTable:
+            tableName: customer
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: customer_pkey
+                  name: id
+                  type: SERIAL
+              - column:
+                  name: customer_name
+                  type: varchar(50)
+              - column:
+                  name: address
+                  type: varchar(30)
+              - column:
+                  name: city
+                  type: varchar(30)
+              - column:
+                  name: state
+                  type: varchar(30)
+              - column:
+                  name: zip_code
+                  type: varchar(30)
+              - column:
+                  name: phone
+                  type: varchar(20)
+              - column:
+                  name: email
+                  type: varchar(255)
+              - column:
+                  name: created_date
+                  type: timestamp
+              - column:
+                  name: last_modified_date
+                  type: timestamp
+
+        - addColumn:
+            tableName: order_header
+            columns:
+              - column:
+                  name: customer_id
+                  type: bigint
+
+        - addForeignKeyConstraint:
+            baseColumnNames: customer_id
+            baseTableName: order_header
+            constraintName: order_customer_fk
+            referencedColumnNames: id
+            referencedTableName: customer
+
+        - dropColumn:
+            tableName: order_header
+            columns:
+              - column:
+                  name: customer

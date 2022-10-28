@@ -1,0 +1,17 @@
+databaseChangeLog:
+  - changeSet:
+      id: order-line-2
+      author: Joban
+      changes:
+        - addColumn:
+            tableName: order_line
+            columns:
+              - column:
+                  name: product_id
+                  type: bigint
+        - addForeignKeyConstraint:
+            baseColumnNames: product_id
+            baseTableName: order_line
+            referencedColumnNames: id
+            referencedTableName: product
+            constraintName: fk_order_line_product

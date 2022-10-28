@@ -4,12 +4,9 @@ package com.sdjpa.domain;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.Hibernate;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
-import java.time.LocalDateTime;
-import java.util.Objects;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by jt on 12/5/21.
@@ -52,7 +49,7 @@ import java.util.Objects;
 @Setter
 public class OrderHeader extends BaseEntity{
 
-    private String customer;
+
 
     @Embedded
     private Address shippingAddress;
@@ -60,15 +57,31 @@ public class OrderHeader extends BaseEntity{
     @Embedded
     private Address billToAddress;
 
+    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    private OrderApproval orderApproval;
+
+    @ManyToOne
+    private Customer customer;
+
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
 
-    @CreationTimestamp
-    @Column(updatable = false)
-    private LocalDateTime createdDate;
+    @OneToMany(mappedBy = "orderHeader", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    private Set<OrderLine> orderLines;
 
-    @UpdateTimestamp
-    private LocalDateTime lastModifiedDate;
+    public void addOrderLine(OrderLine orderLine){
+        if(null == orderLines){
+            orderLines = new HashSet<>();
+        }
+        orderLines.add(orderLine);
+        orderLine.setOrderHeader(this);
+    }
+
+    public void setOrderApproval(OrderApproval orderApproval) {
+        this.orderApproval = orderApproval;
+        orderApproval.setOrderHeader(this);
+    }
+
 
     @Override
     public boolean equals(Object o) {
@@ -76,8 +89,6 @@ public class OrderHeader extends BaseEntity{
         if (!(o instanceof OrderHeader that)) return false;
         if (!super.equals(o)) return false;
 
-        if (getCustomer() != null ? !getCustomer().equals(that.getCustomer()) : that.getCustomer() != null)
-            return false;
         if (getShippingAddress() != null ? !getShippingAddress().equals(that.getShippingAddress()) : that.getShippingAddress() != null)
             return false;
         if (getBillToAddress() != null ? !getBillToAddress().equals(that.getBillToAddress()) : that.getBillToAddress() != null)
@@ -85,18 +96,20 @@ public class OrderHeader extends BaseEntity{
         if (getOrderStatus() != that.getOrderStatus()) return false;
         if (getCreatedDate() != null ? !getCreatedDate().equals(that.getCreatedDate()) : that.getCreatedDate() != null)
             return false;
-        return getLastModifiedDate() != null ? getLastModifiedDate().equals(that.getLastModifiedDate()) : that.getLastModifiedDate() == null;
+        if (getLastModifiedDate() != null ? !getLastModifiedDate().equals(that.getLastModifiedDate()) : that.getLastModifiedDate() != null)
+            return false;
+        return getOrderLines() != null ? getOrderLines().equals(that.getOrderLines()) : that.getOrderLines() == null;
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (getCustomer() != null ? getCustomer().hashCode() : 0);
         result = 31 * result + (getShippingAddress() != null ? getShippingAddress().hashCode() : 0);
         result = 31 * result + (getBillToAddress() != null ? getBillToAddress().hashCode() : 0);
         result = 31 * result + (getOrderStatus() != null ? getOrderStatus().hashCode() : 0);
         result = 31 * result + (getCreatedDate() != null ? getCreatedDate().hashCode() : 0);
         result = 31 * result + (getLastModifiedDate() != null ? getLastModifiedDate().hashCode() : 0);
+        result = 31 * result + (getOrderLines() != null ? getOrderLines().hashCode() : 0);
         return result;
     }
 }

@@ -1,0 +1,36 @@
+databaseChangeLog:
+  - changeSet:
+      id: order_approval-1
+      author: Joban
+      changes:
+        - createTable:
+            tableName: order_approval
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: order_approval_pkey
+                  type: SERIAL
+                  name: id
+              - column:
+                  name: approved_by
+                  type: varchar(50)
+              - column:
+                  name: created_date
+                  type: timestamp
+              - column:
+                  name: last_modified_date
+                  type: timestamp
+        - addColumn:
+            tableName: order_header
+            columns:
+              - column:
+                  type: bigint
+                  name: order_approval_id
+        - addForeignKeyConstraint:
+            baseColumnNames: order_approval_id
+            baseTableName: order_header
+            constraintName: order_approval_fkey
+            referencedColumnNames: id
+            referencedTableName: order_approval

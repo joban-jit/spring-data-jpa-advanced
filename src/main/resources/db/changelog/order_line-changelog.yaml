@@ -1,0 +1,34 @@
+databaseChangeLog:
+  - changeSet:
+      id: order_line-1
+      author: Joban
+      changes:
+        - createTable:
+            tableName: order_line
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: order_line_pkey
+                  name: id
+                  type: SERIAL
+              - column:
+                  name: quantity_ordered
+                  type: int
+              - column:
+                  name: order_header_id
+                  type: bigint
+              - column:
+                  name: created_date
+                  type: timestamp
+              - column:
+                  name: last_modified_date
+                  type: timestamp
+        - addForeignKeyConstraint:
+            baseTableName: order_line
+            baseColumnNames: order_header_id
+            referencedColumnNames: id
+            referencedTableName: order_header
+            baseTableSchemaName: public
+            constraintName: fk_order_header_line_id
