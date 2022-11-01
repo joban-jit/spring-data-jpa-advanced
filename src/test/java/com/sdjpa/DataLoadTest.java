@@ -8,10 +8,11 @@ import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.annotation.Rollback;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -31,6 +32,28 @@ public class DataLoadTest {
     @Autowired
     ProductRepository productRepository;
 
+    @Test
+    void testN_PlusOneProblem(){
+        Customer customer = customerRepository.findCustomerByCustomerNameIgnoreCase(TEST_CUSTOMER).get();
+        IntSummaryStatistics totalOrdered = orderHeaderRepository.findAllByCustomer(customer).stream()
+                .flatMap(orderHeader -> orderHeader.getOrderLines().stream())
+                .collect(Collectors.summarizingInt(ol -> ol.getQuantityOrdered()));
+        System.out.println("total ordered: "+totalOrdered.getSum());
+
+
+    }
+
+
+    @Test
+    void testLazyVsEager(){
+        OrderHeader orderHeader = orderHeaderRepository.getReferenceById(400L);
+        System.out.println("Order Id is "+orderHeader.getId());
+        System.out.println("Customer Name is "+ orderHeader.getCustomer().getCustomerName());
+    }
+
+    @Disabled
+    @Test
+    @Rollback(value = false)
     void testDataLoader() {
         List<Product> products = loadProducts();
         Customer customer = loadCustomers();
@@ -56,7 +79,8 @@ public class DataLoadTest {
             OrderLine orderLine = new OrderLine();
             orderLine.setProduct(product);
             orderLine.setQuantityOrdered(random.nextInt(20));
-            orderHeader.getOrderLines().add(orderLine);
+            orderHeader.addOrderLine(orderLine);
+
         });
 
         return orderHeaderRepository.save(orderHeader);

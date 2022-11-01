@@ -14,7 +14,7 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Customer extends BaseEntity{
+public class Customer extends BaseEntity {
     private String customerName;
     @Embedded
     private Address address;
