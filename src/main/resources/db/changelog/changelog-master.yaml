@@ -21,4 +21,12 @@ databaseChangeLog:
       file: db/changelog/order_approval-changelog.yaml
   - include:
       file: db/changelog/order_approval_bi_dir-changelog.yaml
+  - include:
+      file: db/changelog/customer_version_col-changelog.yaml
+  - include:
+      file: db/changelog/order_header_line_version_col-changelog.yaml
+  - include:
+      file: db/changelog/initialize_version-changelog.yaml
+  - include:
+     file: db/changelog/product_quantity_col-changelog.yaml
 

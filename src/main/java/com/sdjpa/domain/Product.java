@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.util.Set;
 
 @Entity
@@ -11,6 +12,8 @@ import java.util.Set;
 @Setter
 public class Product extends BaseEntity{
     private String description;
+
+    private BigDecimal quantityOnHand = BigDecimal.ONE;
 
     @Enumerated(EnumType.STRING)
     private ProductStatus productStatus;

@@ -34,7 +34,7 @@ public class DataLoadTest {
 
     @Test
     void testDBLock(){
-        Long id = 400L;
+        Long id = 1L;
         OrderHeader orderHeader = orderHeaderRepository.findById(id).get();
         Address billTo = new Address();
         billTo.setAddress("Bill me");
@@ -58,7 +58,7 @@ public class DataLoadTest {
 
     @Test
     void testLazyVsEager(){
-        OrderHeader orderHeader = orderHeaderRepository.getReferenceById(400L);
+        OrderHeader orderHeader = orderHeaderRepository.getReferenceById(1L);
         System.out.println("Order Id is "+orderHeader.getId());
         System.out.println("Customer Name is "+ orderHeader.getCustomer().getCustomerName());
     }

@@ -3,6 +3,7 @@ package com.sdjpa.domain;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Version;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -23,6 +24,9 @@ public class OrderLine extends BaseEntity{
 
     @ManyToOne
     private Product product;
+
+    @Version
+    private Integer version;
 
 
     @Override
