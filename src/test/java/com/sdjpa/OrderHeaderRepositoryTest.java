@@ -118,6 +118,11 @@ class OrderHeaderRepositoryTest {
         OrderHeader orderHeader = new OrderHeader();
         Customer customer = new Customer();
         customer.setCustomerName("New Customer");
+        customer.setPhone("0123456789");
+        customer.setEmail("s@abc.com");
+        Address address = new Address();
+        address.setCity("city");
+        customer.setAddress(address);
         orderHeader.setCustomer(customerRepository.save(customer));
         OrderLine orderLine = new OrderLine();
         orderLine.setQuantityOrdered(3);
