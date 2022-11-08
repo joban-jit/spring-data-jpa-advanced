@@ -34,7 +34,7 @@ class CreditCardRepositoryTest {
         creditCard.setCvv("123");
         creditCard.setExpirationDate("12/2028");
         System.out.println("saving CC in database...");
-        CreditCard savedCC = creditCardRepository.saveAndFlush(creditCard);
+        CreditCard savedCC = creditCardRepository.save(creditCard);
         System.out.println("Getting CC number from database: "+savedCC.getCreditCardNumber());
         System.out.println("CC at Rest");
         String encryptedCCNo = encryptionService.encrypt(CREDIT_CARD_NUMBER);
@@ -50,17 +50,17 @@ class CreditCardRepositoryTest {
 
         // onLoad() METHOD IS NOT WORKING WITH INTERCEPTORS, SO "FETCHING" FROM DATABASE IS NOT WORKING IF WE TRY TO
         // MANIPULATE DATA AS NO DATA IS AVAILABLE WHEN WE USE onLoad METHOD, SO DECODING IS NOT HAPPENING
-
-//        System.out.println("fetching CC from database...");
-//        Optional<CreditCard> fetchedCC = creditCardRepository.findById(savedCCId);
-//        assertEquals(savedCC.getCreditCardNumber(), fetchedCC.get().getCreditCardNumber());
+        // but this worked with listeners
+        System.out.println("fetching CC from database...");
+        Optional<CreditCard> fetchedCC = creditCardRepository.findById(savedCCId);
+        assertEquals(CREDIT_CARD_NUMBER, fetchedCC.get().getCreditCardNumber());
 
     }
 
-//    @Test
-//    void testOnLoadmethod(){
-//        CreditCard fetchedCC = creditCardRepository.findById(25L).get();
-//
-//        assertThat(fetchedCC.getCreditCardNumber()).isEqualTo(CREDIT_CARD_NUMBER);
-//    }
+    // this method also works with listeners, but didn't work with interceptors
+    @Test
+    void testOnLoadmethod(){
+        CreditCard fetchedCC = creditCardRepository.findById(25L).get();
+        assertThat(fetchedCC.getCreditCardNumber()).isEqualTo(CREDIT_CARD_NUMBER);
+    }
 }

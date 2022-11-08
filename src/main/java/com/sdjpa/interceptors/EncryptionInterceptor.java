@@ -1,14 +1,11 @@
 package com.sdjpa.interceptors;
 
+import com.sdjpa.custom_annotations.EncryptedString;
 import com.sdjpa.services.EncryptionService;
 import org.hibernate.CallbackException;
 import org.hibernate.Interceptor;
-import org.hibernate.Transaction;
-import org.hibernate.metamodel.RepresentationMode;
-import org.hibernate.metamodel.spi.EntityRepresentationStrategy;
 import org.hibernate.type.Type;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import java.io.Serializable;
@@ -16,7 +13,7 @@ import java.lang.reflect.Field;
 import java.util.*;
 
 
-@Component
+//@Component commented out to disable interceptors
 public class EncryptionInterceptor implements Interceptor, Serializable
 {
     @Autowired
@@ -38,6 +35,7 @@ public class EncryptionInterceptor implements Interceptor, Serializable
             Arrays.stream(types).forEach(t->{
                 System.out.println(t.getName());
             });
+            // THIS IS NOT WORKING TO DECRYPT OBJECT , SO TRY USING LISTENERS INSTEAD
         }
 //        Object[] newState = processFields(entity, state, propertyNames, "onLoad");
         return Interceptor.super.onLoad(entity, id, state, propertyNames, types);

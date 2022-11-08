@@ -1,4 +1,4 @@
-package com.sdjpa.interceptors;
+package com.sdjpa.custom_annotations;
 
 import java.lang.annotation.*;
 

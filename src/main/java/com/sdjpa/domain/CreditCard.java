@@ -1,6 +1,6 @@
 package com.sdjpa.domain;
 
-import com.sdjpa.interceptors.EncryptedString;
+import com.sdjpa.custom_annotations.EncryptedString;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -8,8 +8,6 @@ import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.time.LocalDate;
 
 @Entity
 @Getter

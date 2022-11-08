@@ -7,14 +7,15 @@ import org.springframework.context.annotation.Configuration;
 
 import java.util.Map;
 
-@Configuration
+//@Configuration commented out to disable interceptors
 public class InterceptorRegistration implements HibernatePropertiesCustomizer {
 
-    @Autowired
+//    @Autowired commented out to disable interceptors
     EncryptionInterceptor encryptionInterceptor;
 
+//    commented out to disable interceptors
     @Override
     public void customize(Map<String, Object> hibernateProperties) {
-        hibernateProperties.put("hibernate.session_factory.interceptor", encryptionInterceptor);
+//        hibernateProperties.put("hibernate.session_factory.interceptor", encryptionInterceptor);
     }
 }
