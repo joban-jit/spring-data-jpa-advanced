@@ -1,9 +1,6 @@
-package com.sdjpa.domain;
+package com.sdjpa.domain.creditcard;
 
-import com.sdjpa.custom_annotations.EncryptedString;
-import com.sdjpa.listeners.PostLoadListener;
-import com.sdjpa.listeners.PreInsertListener;
-import com.sdjpa.listeners.PreUpdateListener;
+import com.sdjpa.domain.CreditCardConverter;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

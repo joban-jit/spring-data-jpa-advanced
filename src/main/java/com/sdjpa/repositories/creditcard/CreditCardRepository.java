@@ -1,8 +1,7 @@
-package com.sdjpa.repositories;
+package com.sdjpa.repositories.creditcard;
 
-import com.sdjpa.domain.CreditCard;
+import com.sdjpa.domain.creditcard.CreditCard;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 public interface CreditCardRepository extends JpaRepository<CreditCard, Long> {
 }
