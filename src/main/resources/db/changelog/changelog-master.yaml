@@ -1,4 +1,4 @@
-databaseChangeLog:
-  - include:
-      file: db/changelog/baseline-changelog.yaml
+#databaseChangeLog:
+#  - include:
+#      file: db/changelog/baseline-changelog.yaml
 
