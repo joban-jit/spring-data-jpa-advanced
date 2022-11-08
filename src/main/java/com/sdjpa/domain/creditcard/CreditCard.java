@@ -16,10 +16,9 @@ public class CreditCard {
     private Long id;
 
     @Convert(converter = CreditCardConverter.class)
-    private String creditCardNumber;
-
     private String cvv;
 
+    @Convert(converter = CreditCardConverter.class)
     private String expirationDate;
 
 }

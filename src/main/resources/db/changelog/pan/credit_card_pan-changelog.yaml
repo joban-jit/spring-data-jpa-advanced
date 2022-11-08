@@ -1,0 +1,19 @@
+databaseChangeLog:
+- changeSet:
+    id: baseline-113
+    author: Joban
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: credit_card_pan_pkey
+            name: id
+            type: SERIAL
+        - column:
+            name: credit_card_number
+            type: VARCHAR(30)
+        tableName: credit_card_pan
+

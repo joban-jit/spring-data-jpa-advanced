@@ -2,8 +2,10 @@ package com.sdjpa.config;
 
 import com.sdjpa.domain.creditcard.CreditCard;
 import com.zaxxer.hikari.HikariDataSource;
+import liquibase.integration.spring.SpringLiquibase;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
+import org.springframework.boot.autoconfigure.liquibase.LiquibaseProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
 import org.springframework.context.annotation.Bean;
@@ -56,5 +58,30 @@ public class CardDatabaseConfiguration {
             @Qualifier("cardEntityManagerFactory") LocalContainerEntityManagerFactoryBean cardEntityManagerFactory
     ){
         return new JpaTransactionManager(cardEntityManagerFactory.getObject());
+    }
+
+
+    @Bean
+    @ConfigurationProperties(value = "spring.card.liquibase")
+    public LiquibaseProperties cardLiquibaseProperties(){
+        return new LiquibaseProperties();
+    }
+
+    @Bean
+    public SpringLiquibase cardLiquibase(
+            @Qualifier("cardDataSource") DataSource cardDataSource,
+            @Qualifier("cardLiquibaseProperties") LiquibaseProperties cardLiquibaseProperties
+    ){
+        return getSpringLiquibase(cardDataSource, cardLiquibaseProperties);
+    }
+
+    private SpringLiquibase getSpringLiquibase(DataSource dataSource, LiquibaseProperties liquibaseProperties) {
+        SpringLiquibase springLiquibase = new SpringLiquibase();
+        springLiquibase.setChangeLog(liquibaseProperties.getChangeLog());
+        springLiquibase.setDataSource(dataSource);
+        springLiquibase.setContexts(liquibaseProperties.getContexts());
+        springLiquibase.setDefaultSchema(liquibaseProperties.getDefaultSchema());
+        springLiquibase.setShouldRun(liquibaseProperties.isEnabled());
+        return springLiquibase;
     }
 }

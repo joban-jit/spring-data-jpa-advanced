@@ -1,6 +1,6 @@
 databaseChangeLog:
 - changeSet:
-    id: baseline-13
+    id: baseline-111
     author: Joban
     changes:
     - createTable:
@@ -13,13 +13,10 @@ databaseChangeLog:
             name: id
             type: SERIAL
         - column:
-            name: credit_card_number
+            name: cvv
             type: VARCHAR(20)
         - column:
-            name: cvv
-            type: VARCHAR(4)
-        - column:
             name: expiration_date
-            type: VARCHAR(7)
+            type: VARCHAR(20)
         tableName: credit_card
 

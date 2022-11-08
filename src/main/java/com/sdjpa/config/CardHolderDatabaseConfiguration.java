@@ -2,8 +2,10 @@ package com.sdjpa.config;
 
 import com.sdjpa.domain.creditcardholder.CreditCardHolder;
 import com.zaxxer.hikari.HikariDataSource;
+import liquibase.integration.spring.SpringLiquibase;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
+import org.springframework.boot.autoconfigure.liquibase.LiquibaseProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
 import org.springframework.context.annotation.Bean;
@@ -56,6 +58,31 @@ public class CardHolderDatabaseConfiguration {
             @Qualifier("cardHolderEntityManagerFactory") LocalContainerEntityManagerFactoryBean cardHolderEntityManagerFactory
     ){
        return new JpaTransactionManager(cardHolderEntityManagerFactory.getObject());
+    }
+
+
+    @Bean
+    @ConfigurationProperties(value = "spring.cardholder.liquibase")
+    public LiquibaseProperties cardholderLiquibaseProperties(){
+        return new LiquibaseProperties();
+    }
+
+    @Bean
+    public SpringLiquibase cardholderLiquibase(
+            @Qualifier("cardHolderDataSource") DataSource cardHolderDataSource,
+            @Qualifier("cardholderLiquibaseProperties") LiquibaseProperties cardholderLiquibaseProperties
+    ){
+        return getSpringLiquibase(cardHolderDataSource, cardholderLiquibaseProperties);
+    }
+
+    private SpringLiquibase getSpringLiquibase(DataSource dataSource, LiquibaseProperties liquibaseProperties) {
+        SpringLiquibase springLiquibase = new SpringLiquibase();
+        springLiquibase.setChangeLog(liquibaseProperties.getChangeLog());
+        springLiquibase.setDataSource(dataSource);
+        springLiquibase.setContexts(liquibaseProperties.getContexts());
+        springLiquibase.setDefaultSchema(liquibaseProperties.getDefaultSchema());
+        springLiquibase.setShouldRun(liquibaseProperties.isEnabled());
+        return springLiquibase;
     }
 
 }

@@ -1,0 +1,25 @@
+databaseChangeLog:
+- changeSet:
+    id: baseline-112
+    author: Joban
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: credit_card_holder_pkey
+            name: id
+            type: SERIAL
+        - column:
+            name: first_name
+            type: VARCHAR(30)
+        - column:
+            name: last_name
+            type: VARCHAR(30)
+        - column:
+            name: zip_code
+            type: VARCHAR(10)
+        tableName: credit_card_holder
+

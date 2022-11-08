@@ -2,8 +2,10 @@ package com.sdjpa.config;
 
 import com.sdjpa.domain.pan.CreditCardPAN;
 import com.zaxxer.hikari.HikariDataSource;
+import liquibase.integration.spring.SpringLiquibase;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
+import org.springframework.boot.autoconfigure.liquibase.LiquibaseProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
 import org.springframework.context.annotation.Bean;
@@ -15,6 +17,8 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.sql.DataSource;
+import javax.swing.*;
+
 @EnableJpaRepositories(
         basePackages = "com.sdjpa.repositories.pan",
         entityManagerFactoryRef = "panEntityManagerFactory",
@@ -60,5 +64,29 @@ public class PanDatabaseConfiguration {
             @Qualifier("panEntityManagerFactory") LocalContainerEntityManagerFactoryBean panEntityManagerFactory
     ){
         return new JpaTransactionManager(panEntityManagerFactory.getObject());
+    }
+
+    @Bean
+    @ConfigurationProperties(value = "spring.pan.liquibase")
+    public LiquibaseProperties panLiquibaseProperties(){
+        return new LiquibaseProperties();
+    }
+
+    @Bean
+    public SpringLiquibase panLiquibase(
+            @Qualifier("panDataSource") DataSource panDataSource,
+            @Qualifier("panLiquibaseProperties") LiquibaseProperties panLiquibaseProperties
+    ){
+        return getSpringLiquibase(panDataSource, panLiquibaseProperties);
+    }
+
+    private SpringLiquibase getSpringLiquibase(DataSource dataSource, LiquibaseProperties liquibaseProperties) {
+        SpringLiquibase springLiquibase = new SpringLiquibase();
+        springLiquibase.setChangeLog(liquibaseProperties.getChangeLog());
+        springLiquibase.setDataSource(dataSource);
+        springLiquibase.setContexts(liquibaseProperties.getContexts());
+        springLiquibase.setDefaultSchema(liquibaseProperties.getDefaultSchema());
+        springLiquibase.setShouldRun(liquibaseProperties.isEnabled());
+        return springLiquibase;
     }
 }

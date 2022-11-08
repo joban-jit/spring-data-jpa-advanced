@@ -1,0 +1,4 @@
+databaseChangeLog:
+  - include:
+      file: db/changelog/pan/credit_card_pan-changelog.yaml
+
