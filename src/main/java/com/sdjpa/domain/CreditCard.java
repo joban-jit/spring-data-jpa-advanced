@@ -13,13 +13,13 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-//@EntityListeners(value = {CreditCardJPACallback.class}) disabled jpa callbacks
+//@EntityListeners(value = {CreditCardJPACallback.class}) //disabled jpa callbacks
 public class CreditCard {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-//    @EncryptedString // commented this as we won't use our annotation with jpa converters
+//    @EncryptedString // commented this as we won't use our annotation with jpa converters and jpa callbacks
     @Convert(converter = CreditCardConverter.class)
     private String creditCardNumber;
 
