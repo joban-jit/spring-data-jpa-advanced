@@ -35,7 +35,6 @@ public class PanDatabaseConfiguration {
     }
 
     @Bean
-    @Primary
     public LocalContainerEntityManagerFactoryBean panEntityManagerFactory(
             @Qualifier("panDataSource") DataSource panDataSource,
             EntityManagerFactoryBuilder builder
