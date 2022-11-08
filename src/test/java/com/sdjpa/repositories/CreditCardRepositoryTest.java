@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.annotation.Rollback;
 
 import java.util.Map;
 import java.util.Optional;
@@ -28,6 +29,7 @@ class CreditCardRepositoryTest {
     private EncryptionService encryptionService;
 
     @Test
+
     void testSaveAndStoreCreditCard(){
         CreditCard creditCard = new CreditCard();
         creditCard.setCreditCardNumber(CREDIT_CARD_NUMBER);
@@ -60,7 +62,7 @@ class CreditCardRepositoryTest {
     // this method also works with listeners, but didn't work with interceptors
     @Test
     void testOnLoadmethod(){
-        CreditCard fetchedCC = creditCardRepository.findById(25L).get();
+        CreditCard fetchedCC = creditCardRepository.findById(45L).get();
         assertThat(fetchedCC.getCreditCardNumber()).isEqualTo(CREDIT_CARD_NUMBER);
     }
 }

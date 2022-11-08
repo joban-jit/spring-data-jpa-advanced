@@ -1,10 +1,10 @@
 package com.sdjpa.domain;
 
 import com.sdjpa.custom_annotations.EncryptedString;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.sdjpa.listeners.PostLoadListener;
+import com.sdjpa.listeners.PreInsertListener;
+import com.sdjpa.listeners.PreUpdateListener;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,6 +13,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+@EntityListeners(value = {CreditCardJPACallback.class})
 public class CreditCard {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,6 +25,11 @@ public class CreditCard {
     private String cvv;
 
     private String expirationDate;
+
+    @PrePersist
+    public void prePresistCallback(){
+        System.out.println("JPA PrePresist Callback was called");
+    }
 
     @Override
     public boolean equals(Object o) {
