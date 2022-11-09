@@ -2,14 +2,14 @@ package com.sdjpa.domain.creditcard;
 
 import com.sdjpa.domain.CreditCardConverter;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
 @Getter
 @Setter
+@AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class CreditCard {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
