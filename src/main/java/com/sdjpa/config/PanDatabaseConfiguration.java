@@ -1,5 +1,6 @@
 package com.sdjpa.config;
 
+import com.sdjpa.domain.creditcardholder.CreditCardHolder;
 import com.sdjpa.domain.pan.CreditCardPAN;
 import com.zaxxer.hikari.HikariDataSource;
 import liquibase.integration.spring.SpringLiquibase;
@@ -18,6 +19,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.sql.DataSource;
 import javax.swing.*;
+import java.util.Properties;
 
 @EnableJpaRepositories(
         basePackages = "com.sdjpa.repositories.pan",
@@ -52,11 +54,20 @@ public class PanDatabaseConfiguration {
             @Qualifier("panDataSource") DataSource panDataSource,
             EntityManagerFactoryBuilder builder
     ){
-        return builder
+
+        Properties properties = new Properties();
+        //spring.jpa.hibernate.ddl-auto
+        properties.put("spring.jpa.hibernate.ddl-auto", "validate"); // this is actual a shortcut for hibernate.hbm2ddl.auto
+        properties.put("hibernate.physical_naming_strategy",
+                "org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy");
+        LocalContainerEntityManagerFactoryBean lcemfb = builder
                 .dataSource(panDataSource)
                 .packages(CreditCardPAN.class)
                 .persistenceUnit("pan")
                 .build();
+        lcemfb.setJpaProperties(properties);
+
+        return lcemfb;
     }
 
     @Bean

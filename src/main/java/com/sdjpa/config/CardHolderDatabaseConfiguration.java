@@ -1,5 +1,6 @@
 package com.sdjpa.config;
 
+import com.sdjpa.domain.creditcard.CreditCard;
 import com.sdjpa.domain.creditcardholder.CreditCardHolder;
 import com.zaxxer.hikari.HikariDataSource;
 import liquibase.integration.spring.SpringLiquibase;
@@ -17,6 +18,8 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 
 import javax.sql.DataSource;
+import java.util.Properties;
+
 @EnableJpaRepositories(
         basePackages = "com.sdjpa.repositories.creditcardholder",
         entityManagerFactoryRef = "cardHolderEntityManagerFactory",
@@ -47,11 +50,19 @@ public class CardHolderDatabaseConfiguration {
             @Qualifier("cardHolderDataSource") DataSource cardHolderDataSource,
             EntityManagerFactoryBuilder builder
     ){
-        return builder
+        Properties properties = new Properties();
+        //spring.jpa.hibernate.ddl-auto
+        properties.put("hibernate.hbm2ddl.auto", "validate");
+        properties.put("hibernate.physical_naming_strategy",
+                "org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy");
+        LocalContainerEntityManagerFactoryBean lcemfb = builder
                 .dataSource(cardHolderDataSource)
                 .packages(CreditCardHolder.class)
                 .persistenceUnit("cardholder")
                 .build();
+        lcemfb.setJpaProperties(properties);
+
+        return lcemfb;
     }
 
     @Bean

@@ -16,6 +16,8 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.sql.DataSource;
+import java.util.Properties;
+
 @EnableJpaRepositories(
         basePackages = "com.sdjpa.repositories.creditcard",
         entityManagerFactoryRef = "cardEntityManagerFactory",
@@ -46,11 +48,19 @@ public class CardDatabaseConfiguration {
             @Qualifier("cardDataSource") DataSource cardDataSource,
             EntityManagerFactoryBuilder builder
     ){
-        return builder
+        Properties properties = new Properties();
+        //spring.jpa.hibernate.ddl-auto
+        properties.put("hibernate.hbm2ddl.auto", "validate");
+        properties.put("hibernate.physical_naming_strategy",
+                "org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy");
+        LocalContainerEntityManagerFactoryBean lcemfb = builder
                 .dataSource(cardDataSource)
                 .packages(CreditCard.class)
                 .persistenceUnit("card")
                 .build();
+        lcemfb.setJpaProperties(properties);
+
+        return lcemfb;
 
     }
 

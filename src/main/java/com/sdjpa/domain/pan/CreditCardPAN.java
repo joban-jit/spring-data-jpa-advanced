@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
+@Table(name = "credit_card_pan")
 @Getter
 @Setter
 @NoArgsConstructor
