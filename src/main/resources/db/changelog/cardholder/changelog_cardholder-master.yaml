@@ -1,4 +1,6 @@
 databaseChangeLog:
   - include:
       file: db/changelog/cardholder/credit_card_holder-changelog.yaml
+  - include:
+      file: db/changelog/cardholder/credit_card_id_col-changelog.yaml
 

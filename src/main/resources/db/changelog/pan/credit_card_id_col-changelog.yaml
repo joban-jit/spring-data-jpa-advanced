@@ -1,0 +1,11 @@
+databaseChangeLog:
+  - changeSet:
+      id: credit_card_id_col-131
+      author: Joban
+      changes:
+        - addColumn:
+            tableName: credit_card_pan
+            columns:
+              - column:
+                  type: bigint
+                  name: credit_card_id
