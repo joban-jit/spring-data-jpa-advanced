@@ -37,4 +37,12 @@ class SdjpaApplicationTest {
         assertNotNull(fetchedCc.getCreditCardNumber());
         assertEquals("123456789" , fetchedCc.getCreditCardNumber());
     }
+
+    @Test
+    void testTxnManager(){
+        CreditCard creditCard = creditCardService.getCreditCard(1L);
+        assertNotNull(creditCard);
+        assertNotNull(creditCard.getId());
+        assertEquals("123", creditCard.getCvv());
+    }
 }

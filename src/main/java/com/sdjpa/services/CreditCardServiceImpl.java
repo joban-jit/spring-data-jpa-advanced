@@ -63,4 +63,11 @@ public class CreditCardServiceImpl implements CreditCardService{
 
         return savedCC;
     }
+
+    @Transactional("cardTransactionManager")
+    @Override
+    public CreditCard getCreditCard(Long id) {
+        return creditCardRepository.findById(id).orElseThrow();
+
+    }
 }

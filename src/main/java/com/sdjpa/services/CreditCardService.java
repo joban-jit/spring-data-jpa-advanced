@@ -6,4 +6,6 @@ public interface CreditCardService {
     CreditCard getCreditCardById(Long id);
 
     CreditCard saveCreditCard(CreditCard cc);
+
+    CreditCard getCreditCard(Long id);
 }

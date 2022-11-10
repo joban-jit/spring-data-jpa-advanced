@@ -11,11 +11,15 @@ import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
+import java.util.HashMap;
 import java.util.Properties;
 
 @EnableJpaRepositories(
@@ -24,6 +28,7 @@ import java.util.Properties;
         transactionManagerRef = "cardTransactionManager"
 )
 @Configuration
+@EnableTransactionManagement
 public class CardDatabaseConfiguration {
 
     @Bean
@@ -45,22 +50,20 @@ public class CardDatabaseConfiguration {
 
     @Bean
     public LocalContainerEntityManagerFactoryBean cardEntityManagerFactory(
-            @Qualifier("cardDataSource") DataSource cardDataSource,
-            EntityManagerFactoryBuilder builder
+            @Qualifier("cardDataSource") DataSource cardDataSource
     ){
-        Properties properties = new Properties();
-        //spring.jpa.hibernate.ddl-auto
+        final LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
+        em.setDataSource(cardDataSource);
+        em.setPackagesToScan("com.sdjpa.domain.creditcard");
+        final HibernateJpaVendorAdapter hibernateJpaVendorAdapter = new HibernateJpaVendorAdapter();
+        em.setJpaVendorAdapter(hibernateJpaVendorAdapter);
+        em.setPersistenceUnitName("card");
+        final HashMap<String, String> properties = new HashMap<>();
         properties.put("hibernate.hbm2ddl.auto", "validate");
         properties.put("hibernate.physical_naming_strategy",
                 "org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy");
-        LocalContainerEntityManagerFactoryBean lcemfb = builder
-                .dataSource(cardDataSource)
-                .packages(CreditCard.class)
-                .persistenceUnit("card")
-                .build();
-        lcemfb.setJpaProperties(properties);
-
-        return lcemfb;
+        em.setJpaPropertyMap(properties);
+        return em;
 
     }
 
